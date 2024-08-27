@@ -11,9 +11,9 @@ import React from 'react';
 import useIsToken from '../hooks/useIsToken';
 
 const Battles: React.FC = () => {
-	const { checkIfTokenCookieExists } = useIsToken();
+	const { checkIfTokenCookieExistsAndRedirectIfNot } = useIsToken();
 
-	checkIfTokenCookieExists();
+	checkIfTokenCookieExistsAndRedirectIfNot();
 
 	return (
 		<IonPage>

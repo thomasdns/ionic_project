@@ -25,12 +25,17 @@ import {
 	setCapacitorCookie,
 	setCookie,
 } from '../utils/capacitor-plugins/cookies';
+import useIsToken from '../hooks/useIsToken';
 
 const Inscription: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [name, setName] = useState('');
 	const [password, setPassword] = React.useState('');
 	const [confirmPassword, setConfirmPassword] = React.useState('');
+
+	const { checkIfTokenCookieExistsAndRedirectIf } = useIsToken();
+
+	checkIfTokenCookieExistsAndRedirectIf();
 
 	const [presentAlert] = useIonAlert();
 

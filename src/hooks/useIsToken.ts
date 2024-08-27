@@ -4,7 +4,7 @@ import { getCookies } from '../utils/capacitor-plugins/cookies';
 const useIsToken = () => {
 	const router = useIonRouter();
 
-	const checkIfTokenCookieExists = () => {
+	const checkIfTokenCookieExistsAndRedirectIfNot = () => {
 		useIonViewWillEnter(() => {
 			try {
 				const allCookies = getCookies().split(';');
@@ -29,7 +29,33 @@ const useIsToken = () => {
 		});
 	};
 
-	return { checkIfTokenCookieExists };
+	const checkIfTokenCookieExistsAndRedirectIf = () => {
+		useIonViewWillEnter(() => {
+			try {
+				const allCookies = getCookies().split(';');
+				const cookiesObject = allCookies.map((cookie) => {
+					const cookieArr = cookie.split('=');
+					return {
+						key: cookieArr[0].trim(),
+						value: cookieArr[1].trim(),
+					};
+				});
+
+				const tokenCookie = cookiesObject[1];
+
+				if (tokenCookie.key === 'token') {
+					router.push('/battles');
+				} else {
+					throw new Error('Token cookie not found');
+				}
+			} catch (error) {}
+		});
+	};
+
+	return {
+		checkIfTokenCookieExistsAndRedirectIfNot,
+		checkIfTokenCookieExistsAndRedirectIf,
+	};
 };
 
 export default useIsToken;

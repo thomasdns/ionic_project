@@ -16,12 +16,18 @@ import {
 	IonTitle,
 	IonToast,
 	IonToolbar,
+	useIonAlert,
+	useIonViewDidEnter,
 } from '@ionic/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Inscription: React.FC = () => {
+	const [email, setEmail] = useState('');
+	const [name, setName] = useState('');
 	const [password, setPassword] = React.useState('');
 	const [confirmPassword, setConfirmPassword] = React.useState('');
+
+	const [presentAlert] = useIonAlert();
 
 	const handleInscription = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -53,7 +59,36 @@ const Inscription: React.FC = () => {
 		const response = await request.json();
 
 		console.log(response);
+		if (
+			response ===
+			'11000 duplicate key error collection: whichonebattle_db_production.users index: email already exists'
+		) {
+			presentAlert({
+				header: "L'email est déja utilisé",
+				message: 'Merci de choisir un autre email',
+				buttons: [
+					{
+						text: "J'ai compris",
+						role: 'cancel',
+						handler: () => {
+							setName('');
+							setEmail('');
+							setConfirmPassword('');
+							setPassword('');
+						},
+					},
+				],
+			});
+		}
 	};
+
+	useEffect(() => {
+		console.log('Inscription useEffect');
+	}, []);
+
+	useIonViewDidEnter(() => {
+		console.log('Inscription useIonViewDidEnter');
+	}, []);
 
 	return (
 		<IonPage>
@@ -86,6 +121,10 @@ const Inscription: React.FC = () => {
 											placeholder='Votre adresse mail'
 											labelPlacement='floating'
 											fill='outline'
+											onIonChange={(e) => {
+												setEmail(e.detail.value || '');
+											}}
+											value={email}
 										/>
 										<IonInput
 											required
@@ -95,6 +134,10 @@ const Inscription: React.FC = () => {
 											type='text'
 											placeholder='Jean DUPONT'
 											labelPlacement='floating'
+											value={name}
+											onIonChange={(e) => {
+												setName(e.detail.value || '');
+											}}
 											fill='outline'
 										/>
 										<IonInput

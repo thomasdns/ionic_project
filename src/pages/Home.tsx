@@ -14,9 +14,11 @@ import {
 	IonRow,
 	IonTitle,
 	IonToolbar,
+	useIonViewDidEnter,
 } from '@ionic/react';
 import { logInOutline, personAddOutline, cafeOutline } from 'ionicons/icons';
 import './Home.css';
+import { useEffect } from 'react';
 
 const Home: React.FC = () => {
 	// La partie logique qui gère les features de l'app
@@ -24,6 +26,14 @@ const Home: React.FC = () => {
 		e.preventDefault();
 		console.log('Connexion');
 	};
+
+	useEffect(() => {
+		console.log('Home useEffect');
+	});
+
+	useIonViewDidEnter(() => {
+		console.log('Home useIonViewDidEnter');
+	}, []);
 
 	return (
 		<IonPage>
@@ -96,11 +106,6 @@ const Home: React.FC = () => {
 										Créer un compte
 									</IonButton>
 								</IonCardContent>
-								<IonIcon
-									icon={cafeOutline}
-									size='large'
-									color='primary'
-								></IonIcon>
 							</IonCard>
 						</IonCol>
 					</IonRow>

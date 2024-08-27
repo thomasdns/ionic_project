@@ -17,9 +17,14 @@ import {
 	IonToast,
 	IonToolbar,
 	useIonAlert,
+	useIonRouter,
 	useIonViewDidEnter,
 } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
+import {
+	setCapacitorCookie,
+	setCookie,
+} from '../utils/capacitor-plugins/cookies';
 
 const Inscription: React.FC = () => {
 	const [email, setEmail] = useState('');
@@ -28,6 +33,8 @@ const Inscription: React.FC = () => {
 	const [confirmPassword, setConfirmPassword] = React.useState('');
 
 	const [presentAlert] = useIonAlert();
+
+	const router = useIonRouter();
 
 	const handleInscription = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -79,6 +86,35 @@ const Inscription: React.FC = () => {
 					},
 				],
 			});
+		}
+
+		if (response === 'Password must be at least 6 characters.') {
+			presentAlert({
+				header: 'Mot de passe trop court',
+				message: 'Le mot de passe doit contenir au moins 6 caractères',
+				buttons: [
+					{
+						text: "J'ai compris",
+						role: 'cancel',
+						handler: () => {
+							setConfirmPassword('');
+							setPassword('');
+						},
+					},
+				],
+			});
+		}
+
+		if (response.token) {
+			const cookieUser = {
+				email: response.user.email,
+				id: response.user._id,
+				name: response.user.name,
+			};
+			setCookie('user', JSON.stringify(cookieUser));
+			setCookie('token', response.token);
+
+			router.push('/battles', 'forward');
 		}
 	};
 
